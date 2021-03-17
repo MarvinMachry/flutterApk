@@ -1,6 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:projeto1/database/tarefas_dao.dart';
-import 'package:projeto1/screens/form.dart';
+import 'file:///E:/Users/AndroidStudioProjects/projeto1/lib/screens/tarefas/form.dart';
 import 'package:projeto1/models/tarefa.dart';
 
 class ListaTarefa extends StatefulWidget {
@@ -60,7 +62,7 @@ class ListaTarefaState extends State<ListaTarefa> {
                 return ListView.builder(
                   itemBuilder: (context, index) {
                     final Tarefa tarefa = tarefas[index];
-                    return ItemTarefa(context, tarefa);
+                    return itemTarefa(context, tarefa);
                   },
                   itemCount: tarefas.length,
                 );
@@ -73,22 +75,29 @@ class ListaTarefaState extends State<ListaTarefa> {
     );
   }
 
-  Widget ItemTarefa(BuildContext context, Tarefa tarefa) {
-    return Card(
-        child: ListTile(
-        leading: Icon(Icons.add_alert),
-        title: Text(tarefa.descricao),
-        subtitle: Text(tarefa.obs),
-        enabled: true,
-        onTap: () {
-        final Future future =
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return FormTarefa(tarefa: tarefa);
-        }));
-        future.then((tarefa) {
-          setState(() => {});
-        });
-      },
-    ));
+  Widget itemTarefa(BuildContext context, Tarefa tarefa) {
+    return InkWell(
+        child: Container(
+            padding: EdgeInsets.all(1.0),
+            child: Card(
+                child: ListTile(
+                    leading: Icon(Icons.edit),
+                    title: Text(tarefa.descricao),
+                    subtitle: Text(tarefa.obs),
+                    enabled: true,
+                    onTap: () {
+                      Timer(Duration(milliseconds: 100), () {
+                        final Future future = Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                              return FormTarefa(tarefa: tarefa);
+                            }));
+                        future.then((tarefa) {
+                          setState(() => {});
+                        });
+                      });
+                    })
+            )
+        )
+    );
   }
 }

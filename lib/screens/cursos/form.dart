@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:projeto1/components/editor.dart';
-import 'package:projeto1/database/tarefas_dao.dart';
-import 'package:projeto1/models/tarefa.dart';
+import 'package:projeto1/database/cursos_dao.dart';
+import 'package:projeto1/models/curso.dart';
 
-class FormTarefa extends StatefulWidget {
-  final Tarefa tarefa;
+class FormCurso extends StatefulWidget {
+  final Curso curso;
 
-  FormTarefa({this.tarefa});
+  FormCurso({this.curso});
 
   @override
   State<StatefulWidget> createState() {
-    return FormTarefaState();
+    return FormCursoState();
   }
 }
 
-class FormTarefaState extends State<FormTarefa> {
+class FormCursoState extends State<FormCurso> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _controladorCampoDescricao =
+  final TextEditingController _controladorCampoNome =
   TextEditingController();
-  final TextEditingController _controladorCampoObservacao =
+  final TextEditingController _controladorCampoDescricao =
   TextEditingController();
   int _id = null;
   double _value = 60;
@@ -27,10 +27,10 @@ class FormTarefaState extends State<FormTarefa> {
   @override
   void initState() {
     super.initState();
-    if (widget.tarefa != null) {
-      _id = widget.tarefa.id;
-      _controladorCampoDescricao.text = widget.tarefa.descricao;
-      _controladorCampoObservacao.text = widget.tarefa.obs;
+    if (widget.curso != null) {
+      _id = widget.curso.id;
+      _controladorCampoNome.text = widget.curso.nome;
+      _controladorCampoDescricao.text = widget.curso.descricao;
     }
   }
 
@@ -38,18 +38,18 @@ class FormTarefaState extends State<FormTarefa> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Formulário de Tarefas'),
+          title: Text('Formulário de Cursos'),
         ),
         body: SingleChildScrollView(
             child: Form(
               key: _formKey,
               child: Column(
                 children: [
-                  Editor(_controladorCampoDescricao, 'Tarefa', 'Informe a tarefa',
+                  Editor(_controladorCampoNome, 'Curso', 'Informe o nome do curso',
                       Icons.assessment_sharp, true),
-                  Editor(_controladorCampoObservacao, 'Observação',
-                      'Informe a observação', Icons.notes, false),
-                  Padding(
+                  Editor(_controladorCampoDescricao, 'Descricao',
+                      'Informe a descricao', Icons.notes, true),
+                  /*Padding(
                       padding: const EdgeInsets.all(20),
                       child: DropdownButton<String>(
                         value: dropdownValue,
@@ -80,7 +80,8 @@ class FormTarefaState extends State<FormTarefa> {
                         onChanged: (double value) {
                           setState(() => _value = value);
                         },
-                      )),
+                      )),*/
+
                   RaisedButton(
                       padding: const EdgeInsets.all(16),
                       color: Theme.of(context).primaryColor,
@@ -90,10 +91,11 @@ class FormTarefaState extends State<FormTarefa> {
                       ),
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
-                          setState(() => _saveTarefa(context));
+                          setState(() => _saveCurso(context));
                         }
                       }),
                   SizedBox(height: 16),
+
                   RaisedButton(
                       padding: const EdgeInsets.all(16),
                       color: Theme.of(context).primaryColor,
@@ -113,16 +115,16 @@ class FormTarefaState extends State<FormTarefa> {
             )));
   }
 
-  void _saveTarefa(context) {
-    TarefasDao _dao = new TarefasDao();
+  void _saveCurso(context) {
+    CursosDao _dao = new CursosDao();
     if (_id != null) {
-      final tarefaAlterada = Tarefa(_id, _controladorCampoDescricao.text,
-          _controladorCampoObservacao.text);
-      _dao.update(tarefaAlterada).then((id) => Navigator.pop(context));
+      final cursoAlterada = Curso(_id, _controladorCampoNome.text,
+          _controladorCampoDescricao.text);
+      _dao.update(cursoAlterada).then((id) => Navigator.pop(context));
     } else {
-      final tarefaCriada = Tarefa(
-          0, _controladorCampoDescricao.text, _controladorCampoObservacao.text);
-      _dao.save(tarefaCriada).then((id) => Navigator.pop(context));
+      final cursoCriada = Curso(
+          0, _controladorCampoNome.text, _controladorCampoDescricao.text);
+      _dao.save(cursoCriada).then((id) => Navigator.pop(context));
     }
   }
 
@@ -144,8 +146,8 @@ class FormTarefaState extends State<FormTarefa> {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Exclusão de Tarefas"),
-      content: Text("Você deseja excluir esta tarefa?"),
+      title: Text("Exclusão de Cursos"),
+      content: Text("Você deseja excluir este curso?"),
       actions: [
         cancelButton,
         continueButton,
@@ -162,7 +164,7 @@ class FormTarefaState extends State<FormTarefa> {
   }
 
   void _excluir(BuildContext context) {
-    TarefasDao _dao = new TarefasDao();
+    CursosDao _dao = new CursosDao();
     _dao.delete(_id).then((id) => Navigator.pop(context));
   }
 }
